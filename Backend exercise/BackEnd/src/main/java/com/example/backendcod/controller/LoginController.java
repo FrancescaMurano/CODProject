@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/restex")
+@RequestMapping("/home")
 public class LoginController {
 
     @PostMapping("/login")
