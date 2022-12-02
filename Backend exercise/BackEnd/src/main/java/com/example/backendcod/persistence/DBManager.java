@@ -8,7 +8,7 @@ public class DBManager {
 	static {
 		try {
 			Class.forName("org.postgresql.Driver");
-			dataSource = new DBSource("jdbc:postgresql://localhost:8080/INSERIREPROGETTO","","");
+			dataSource = new DBSource("jdbc:postgresql://localhost:8080/COD_DB","postgres","postgres");
             System.out.println("Success");
 		} 
 		catch (Exception e) {
