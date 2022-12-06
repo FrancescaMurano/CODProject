@@ -8,8 +8,8 @@ public class DBManager {
 	static {
 		try {
 			Class.forName("org.postgresql.Driver");
-			dataSource = new DBSource("jdbc:postgresql://localhost:5432/COD_DB","postgres","postgres");
-            System.out.println("Success");
+			dataSource = new DBSource("jdbc:postgresql://localhost:5432/coddb","postgres2","postgres");
+			System.out.println("Success");
 		} 
 		catch (Exception e) {
 			System.err.println("PostgresDAOFactory.class: failed to load postgresql JDBC driver\n"+e);
@@ -27,7 +27,6 @@ public class DBManager {
 	private DBManager() {}
 	
 	public static DBSource getDataSource() {
-		System.out.println("OK");
 		return dataSource;
 	}
 	

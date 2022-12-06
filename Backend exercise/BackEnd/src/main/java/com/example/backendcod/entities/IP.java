@@ -4,21 +4,26 @@ import java.sql.Timestamp;
 
 public class IP {
     private String IP_number;
-    private Timestamp time;
+    private Long timeinmillis;
     private Integer attempts;
 
-    public IP(String IP_number, Timestamp time, Integer attempts){
+    public IP(String IP_number, Long time, Integer attempts){
         this.IP_number = IP_number;
-        this.time = time;
+        this.timeinmillis = time;
         this.attempts = attempts;
+    }
+    public IP(String IP_number){
+        this.IP_number = IP_number;
+        this.timeinmillis = new Timestamp(System.currentTimeMillis()).getTime();
+        this.attempts = 1;
     }
 
     public void setIP_number(String iP_number) {
         IP_number = iP_number;
     }
 
-    public void setTime(Timestamp time) {
-        this.time = time;
+    public void setTimeinMillis(Long timeinmillis) {
+        this.timeinmillis = timeinmillis;
     }
 
     public void setAttempts(Integer attempts) {
@@ -29,8 +34,8 @@ public class IP {
         return IP_number;
     }
 
-    public Timestamp getTime() {
-        return time;
+    public Long getTimeinmillis() {
+        return timeinmillis;
     }
 
     public Integer getAttempts() {
@@ -38,6 +43,6 @@ public class IP {
     }
 
     public String toString(){
-        return IP_number + ", " + time + ", " + attempts;
+        return IP_number + ", " + timeinmillis + ", " + attempts;
     }
 }

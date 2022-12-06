@@ -18,7 +18,6 @@ public class DBSource {
 	}
 	
     public Connection getConnection() throws SQLException {
-            System.out.println("uri "+ uri);
             Connection connection = DriverManager.getConnection(uri, username, password);
             return connection;
     }

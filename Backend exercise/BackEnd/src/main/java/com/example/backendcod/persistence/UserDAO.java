@@ -12,6 +12,9 @@ import java.util.stream.StreamSupport;
 
 import org.apache.tomcat.util.json.JSONParser;
 import org.json.*;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import com.example.backendcod.entities.LoginData;
 
 public class UserDAO {
     
@@ -32,7 +35,7 @@ public class UserDAO {
 		}
 	}
 
-	public boolean login(JSONObject jsonCredentials) throws SQLException{
+	public boolean login(LoginData credentials) throws SQLException{
 		try {if (conn.isClosed()){
 			getConnectionDB();
 		}
@@ -40,40 +43,30 @@ public class UserDAO {
 			e1.printStackTrace();
 		}
 
-		try{
-			/*StringBuilder query = new StringBuilder("Select * from utente where username=? and password IN (");
-			for(int i = 0; i < jsonCredentials.getJSONArray("password").length(); i++) {
-				if (i > 0) {
-					query.append(",");
+		
+		String query = "SELECT password FROM utente WHERE username=?";
+		PreparedStatement stm = null;
+		try {
+			stm = conn.prepareStatement(query);
+			stm.setString(1, credentials.getUsername());
+
+			ResultSet rs = stm.executeQuery();
+			if(rs.next()){
+				String hash_password = rs.getString("password");
+	
+				if(BCrypt.checkpw(credentials.getPassword(), hash_password)){
+					return true;
 				}
-				query.append("?");
+
 			}
-			query.append(")");
-			
-			PreparedStatement st = conn.prepareStatement(query.toString());
-			st.setString(1, jsonCredentials.getString("username"));
-			
-			int cont=2;
-			for (int i = 0; i < jsonCredentials.getJSONArray("password").length(); i++) {
-				st.setString(cont, jsonCredentials.getJSONArray("password").getString(i));
-				cont++;
-			}*/
-			
-			String query = "Select * from utente where username IN (?) and password IN ("+jsonCredentials.getJSONArray("password").toString()+")";
-			PreparedStatement st = conn.prepareStatement(query);
-			System.out.println(jsonCredentials.get("password").toString());
-			System.out.println(jsonCredentials.getJSONArray("password").toString());
-			st.setString(1, jsonCredentials.get("username").toString());
-		//	st.setString(2, jsonCredentials.get("password").toString());
-			ResultSet rs = st.executeQuery();
-			if (rs.next()) {
-				return true;
-			}
-			st.close();
-		} 
-		catch (SQLException e) {
+
+		}catch (SQLException e) {
 			e.printStackTrace();
-		}finally{try{conn.close();}catch(Exception e){}}
+		}finally{
+			try {conn.close();} catch (SQLException e) {}
+		}
+
+
 		return false;
 	}
 }
