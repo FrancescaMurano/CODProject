@@ -10,6 +10,6 @@ export class LoginService {
   ) {}
 
   login(json: any){
-    return this.httpClient.post("http://localhost:8080/home/login",json);
+    return this.httpClient.post<string>("http://localhost:8080/home/login", json, {responseType: 'text' as 'json'});
   }
 }
