@@ -6,14 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 </head>
-<body>     
+<body>
     <div class="container">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" [(ngModel)]="username" placeholder="Enter Username" name="username" required>
-    
-        <label for="psw"><b>Password</b></label>
-        <input type="password" [(ngModel)]="password" placeholder="Enter Password" name="psw" required>
+      <div class="label-input">
+        <label class="label" for="uname"><b>Username</b></label>
+        <input class="text-input" type="text" [(ngModel)]="username" placeholder="Enter Username" name="username" required>
+      </div>
+      <div class="label-input">
+        <label class="label" for="psw"><b>Password</b></label>
+        <input class="text-input" type="password" [(ngModel)]="password" placeholder="Enter Password" name="psw" required>
+      </div>
+      <div>
+        <button class="button-login" type="button" (click)=doLogin()>Login</button>
+      </div>
     </div>
-    <button type="button" (click)=doLogin()>Login</button>
 </body>
 </html>
