@@ -12,7 +12,6 @@ input[type=text], input[type=password] {
   box-sizing: border-box;
 }
 
-<<<<<<< HEAD
 .label-input{
   align-self: center;
   padding: 2px;
@@ -21,23 +20,6 @@ input[type=text], input[type=password] {
   justify-content: space-between;
   min-width: 400px;
 }
-=======
-  .label-input{
-    align-self: center;
-    padding: 2px;
-    margin:1px;
-    display: flex;
-    justify-content: space-between;
-    min-width: 400px;
-  }
-  .label{
-    margin-right:5px;
-    align-self: center;
-
-  }
-  .text-input{
-    width: 300px !important;
->>>>>>> ed37859c704da38780cf5eed5b322299d48ab41f
 
 .label{
   margin-right:5px;
@@ -45,10 +27,9 @@ input[type=text], input[type=password] {
 
 }
 
-<<<<<<< HEAD
 .text-input{
-  width: 300px !important;
-=======
+  width: 300px !important;}
+
   .button-login{
     width: 100px !important;
     height: 40px !important;
@@ -60,7 +41,6 @@ input[type=text], input[type=password] {
     width: 350px !important;
     border-radius: 20px;
     align-items: center;
->>>>>>> ed37859c704da38780cf5eed5b322299d48ab41f
 
 }
 
