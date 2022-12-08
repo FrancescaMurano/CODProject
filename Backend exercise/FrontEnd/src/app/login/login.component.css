@@ -17,9 +17,14 @@ form {
     align-self: center;
     padding: 2px;
     margin:1px;
+    display: flex;
+    justify-content: space-between;
+    min-width: 400px;
   }
   .label{
-    margin-right:10px ;
+    margin-right:5px;
+    align-self: center;
+
   }
   .text-input{
     width: 300px !important;
@@ -41,6 +46,10 @@ form {
     background-color: wheat;
     color:black;
     border: none;
+    margin-top: 10px;
+    width: 350px !important;
+    border-radius: 20px;
+    align-items: center;
 
   }
 
