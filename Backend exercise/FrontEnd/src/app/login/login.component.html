@@ -9,6 +9,9 @@
 <body>
     <div class="container">
       <div class="label-input">
+        <label id="error-label" class="label" for="uname"><b>{{error}}</b></label>
+      </div>
+      <div class="label-input">
         <label class="label" for="uname"><b>Username</b></label>
         <input class="text-input" type="text" [(ngModel)]="username" placeholder="Enter Username" name="username" required>
       </div>

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
 import { LoginService } from '../services/login.service';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -10,12 +9,13 @@ import { LoginService } from '../services/login.service';
 export class LoginComponent implements OnInit {
 
   constructor(
-    private authService: AuthService
+    private loginService: LoginService,
+    private route: Router
   ) { }
 
   username=""
   password=""
-
+  error=""
   ngOnInit(): void {}
 
   doLogin(){
@@ -25,22 +25,20 @@ export class LoginComponent implements OnInit {
     }
     console.log(json.username)
     console.log(json.password)
-    this.authService.authenticate(json).subscribe(
+    this.loginService.login(json).subscribe(
       response => {
-        console.log(response)
+        if(response === "Sei loggato"){
+          sessionStorage.setItem("user", this.username);
+          this.error = "";
+          this.route.navigate(['home']);
+        }
+        else if(response === "Sei bloccato. Riprova tra 1 minuto"){
+          this.error = "Sei bloccato. Riprova tra 1 minuto";
+        }
+        else{
+          this.error = "Username o password non validi";
+        }
       }
     );
-      /*response => {
-        if(response==true) {
-          sessionStorage.setItem("user", this.email);
-          sessionStorage.setItem("profile", this.tipo_login);
-          this.autenticato = true;
-          //this.route.navigate(['home', this.tipo_login]);
-        }
-        else {
-            this.autenticato = false;
-            this.messageService.add({key: 'saved', severity:'error', summary: 'Login', detail: 'Email o password errati'});
-        }
-      });*/
   }
 }
