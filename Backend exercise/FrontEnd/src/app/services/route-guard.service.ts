@@ -13,15 +13,15 @@ export class RouteGuardService {
     private route: Router,
     private loginService: LoginService
   ) {}
-  
+
   canActivate(route: ActivatedRouteSnapshot, state:  RouterStateSnapshot)  {
-    
+
     if (!this.loginService.isLogged())
     {
       this.route.navigate(['']);
       return false;
     }
-    else 
+    else
     {
       return true;
     }

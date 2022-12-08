@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
   }
 
   doLogout(){
-    sessionStorage.removeItem("user");  
+    sessionStorage.removeItem("user");
     this.route.navigate(['']);
   }
 }

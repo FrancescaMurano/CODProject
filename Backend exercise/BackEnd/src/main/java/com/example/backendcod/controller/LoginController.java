@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.sql.SQLException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,10 +39,11 @@ public class LoginController {
             if (userDAO.login(loginData)) {// è presente nella tabella
                 if(ip!=null && (ip.getAttempts()<=3 || (time - ip.getTimeinmillis()) > 60000)){
                     ipdao.resetAttempts(IP_number, 0);
-                    return ResponseEntity.ok("Sei loggato");
+                    return new ResponseEntity<>("Sei loggato", HttpStatus.FOUND);
                 }
                 else if (ip == null){
-                    return ResponseEntity.ok("Sei loggato");
+                    return new ResponseEntity<>("Sei loggato", HttpStatus.FOUND);
+                    // return ResponseEntity.ok("Sei loggato");
                 }
                 else{
                     ipdao.updateAttempts(IP_number);
