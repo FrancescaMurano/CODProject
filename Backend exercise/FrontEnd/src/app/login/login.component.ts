@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
     console.log(json.password)
     this.loginService.login(json).subscribe(
       response => {
+
         if(response === "Sei loggato"){
           sessionStorage.setItem("user", this.username);
           this.error = "";
