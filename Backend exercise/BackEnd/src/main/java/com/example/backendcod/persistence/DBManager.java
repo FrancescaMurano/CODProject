@@ -8,8 +8,8 @@ public class DBManager {
 	static {
 		try {
 			Class.forName("org.postgresql.Driver");
-			dataSource = new DBSource("jdbc:postgresql://localhost:5432/coddb","postgres2","postgres"); //FRANCA
-			// dataSource = new DBSource("jdbc:postgresql://localhost:5432/COD_DB","postgres","postgres"); //SANTINO
+			// dataSource = new DBSource("jdbc:postgresql://localhost:5432/coddb","postgres2","postgres"); //FRANCA
+			dataSource = new DBSource("jdbc:postgresql://localhost:5432/COD_DB","postgres","postgres"); //SANTINO
 			System.out.println("Success");
 		} 
 		catch (Exception e) {

@@ -28,16 +28,16 @@ export class LoginComponent implements OnInit {
     this.loginService.login(json).subscribe(
       response => {
 
-        if(response === "Sei loggato"){
+        if(response === "You are logged"){
           sessionStorage.setItem("user", this.username);
           this.error = "";
           this.route.navigate(['home']);
         }
-        else if(response === "Sei bloccato. Riprova tra 1 minuto"){
-          this.error = "Sei bloccato. Riprova tra 1 minuto";
+        else if(response === "You're blocked. Please try again in 1 minute"){
+          this.error = "You're blocked. Please try again in 1 minute";
         }
         else{
-          this.error = "Username o password non validi";
+          this.error = "Invalid username or password";
         }
       }
     );

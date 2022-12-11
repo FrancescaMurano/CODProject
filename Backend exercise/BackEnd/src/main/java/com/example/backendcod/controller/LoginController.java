@@ -10,11 +10,7 @@ import com.example.backendcod.utils.HttpUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.Timestamp;
-import java.net.http.HttpHeaders;
 import java.sql.SQLException;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,14 +37,14 @@ public class LoginController {
             if (userDAO.login(loginData)) {// è presente nella tabella
                 if(ip!=null && (ip.getAttempts()<=3 || (time - ip.getTimeinmillis()) > 60000)){
                     ipdao.resetAttempts(IP_number, 0);
-                    return ResponseEntity.ok("Sei loggato");
+                    return ResponseEntity.ok("You are logged");
                 }
                 else if (ip == null){
-                    return ResponseEntity.ok("Sei loggato");
+                    return ResponseEntity.ok("You are logged");
                 }
                 else{
                     ipdao.updateAttempts(IP_number);
-                    return ResponseEntity.ok("Sei bloccato. Riprova tra 1 minuto");
+                    return ResponseEntity.ok("You're blocked. Please try again in 1 minute");
                 }
             } 
             else {
@@ -57,7 +53,7 @@ public class LoginController {
                         // numero di tentativi > 3 ma non è passato 1 minuto
                         if ((time - ip.getTimeinmillis()) < 60000) {
                             ipdao.updateAttempts(IP_number);
-                            return ResponseEntity.ok("Sei bloccato. Riprova tra 1 minuto");
+                            return ResponseEntity.ok("You're blocked. Please try again in 1 minute");
                         } else {
                             // numero di tentativi > 3 ma è passato 1 minuto
                             ipdao.resetAttempts(IP_number, 1);
@@ -79,6 +75,6 @@ public class LoginController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok("Username o password non validi");
+        return ResponseEntity.ok("Invalid username or password");
     } 
 }

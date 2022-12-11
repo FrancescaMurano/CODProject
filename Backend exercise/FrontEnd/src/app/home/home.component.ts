@@ -11,7 +11,10 @@ export class HomeComponent implements OnInit {
     private route: Router
   ) { }
 
+  username:any = ""
+
   ngOnInit(): void {
+    this.username = sessionStorage.getItem("user");
   }
 
   doLogout(){
