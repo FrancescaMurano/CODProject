@@ -68,8 +68,8 @@ def check_lab_solver(server):
     response = requests.get(f"{server}/")
     html_document = html.fromstring(response.content)
     solved_link = html_document.xpath("//section[@id='notification-labsolved']")
-    success_message = "Congratulations, you solved the lab!".center(100)
-    error_message = "Not Solved!".center(100)
+    success_message = "Congratulations, you solved the lab!".center(65)
+    error_message = "Not Solved!".center(65)
 
     if solved_link:
         console.print(success_message, style="blink bold white on green")
@@ -112,7 +112,7 @@ def main(
         with console.status("Checking solving lab"):
             check_lab_solver(server)
     else:
-        console.print("Challenge already solved!".center(100), style="blink bold black on yellow")
+        console.print("Challenge already solved!".center(65), style="blink bold black on yellow")
 
 
 def run():

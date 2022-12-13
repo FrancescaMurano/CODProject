@@ -37,7 +37,7 @@ def login(server):
                                  total=len(passwords))
         while len(passwords) > 0:
             if index % 4 == 0 or index == 1:
-                response = requests.post(f"{server}/home/login", json={
+                requests.post(f"{server}/home/login", json={
                     "username": "carlos",
                     "password": "montoya"
                 })

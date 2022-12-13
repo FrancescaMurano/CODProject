@@ -4,7 +4,6 @@ from requests import Session
 import requests
 
 from rich.console import Console
-from rich.text import Text
 from valid8 import validate
 import re
 from typing import Callable
@@ -25,7 +24,6 @@ def pattern(regex: str) -> Callable[[str], bool]:
 
 
 def login(server):
-    #console.print(f"{'─'*30}'Login'{'─'*30}")
     title = 'Login'
     console.print(f"{'─' * ((64 - len(title)) // 2)}'{title}'{'─' * ((64 - len(title)) // 2)}")
     response = session.get(f"{server}/login")
@@ -45,13 +43,10 @@ def login(server):
 def get_exploit_server(server):
     response = session.get(f"{server}/")
     html_document = html.fromstring(response.content)
-    if len(html_document.xpath("//a[@id='exploit-link']/@href")) == 0:
-        return ""
-    else:
-        exploit_server_link = html_document.xpath("//a[@id='exploit-link']/@href")[0]
-        session.get(f"{exploit_server_link}")
-        console.log(f"Go to exploit server status code: {response.status_code}")
-        return exploit_server_link
+    exploit_server_link = html_document.xpath("//a[@id='exploit-link']/@href")[0]
+    session.get(f"{exploit_server_link}")
+    console.log(f"Go to exploit server status code: {response.status_code}")
+    return exploit_server_link
 
 
 def exploit_server_operation(mode: str, inject_html: str, server):
@@ -74,8 +69,8 @@ def check_lab_solver(server):
     response = session.get(f"{server}/")
     html_document = html.fromstring(response.content)
     solved_link = html_document.xpath("//section[@id='notification-labsolved']")
-    success_message = "Congratulations, you solved the lab!".center(100)
-    error_message = "Not Solved!".center(100)
+    success_message = "Congratulations, you solved the lab!".center(65)
+    error_message = "Not Solved!".center(65)
 
     if solved_link:
         console.print(success_message, style="blink bold white on green")
@@ -84,7 +79,6 @@ def check_lab_solver(server):
 
 
 def is_lab_solved(server):
-    # return True if get_exploit_server(server) == "" else False
     response = requests.get(f"{server}/")
     html_document = html.fromstring(response.content)
     solved_link = html_document.xpath("//section[@id='notification-labsolved']")
@@ -128,7 +122,7 @@ def main(
         with console.status("Checking solving lab"):
             check_lab_solver(server)
     else:
-        console.print("Challenge already solved!".center(100), style="blink bold black on yellow")
+        console.print("Challenge already solved!".center(65), style="blink bold black on yellow")
 
 
 def run():
