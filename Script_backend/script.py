@@ -75,12 +75,6 @@ def validate_server(server):
              help_msg="Insert a valid localhost URL")
 
 
-def is_lab_solved(server):
-    response = requests.get(f"{server}/")
-    html_document = html.fromstring(response.content)
-    solved_link = html_document.xpath("//section[@id='notification-labsolved']")
-    return True if solved_link else False
-
 
 @app.callback()
 def main(
